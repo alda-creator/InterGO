@@ -134,7 +134,7 @@
 
   <script>
     const SUPABASE_URL = "https://vkmyujrxavnufvxaqgfa.supabase.co";
-    const SUPABASE_KEY = "Sb_publisible_cIkkJnUuegPGcH8ZyoGP3A_n2nCqK5w"; 
+    const SUPABASE_KEY = "sb_publishable_cIkkJnUuegPGcH8ZyoGP3A_n2nCqK5w"; 
     
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -143,7 +143,7 @@
       const contenedor = document.getElementById('listaViajes');
       
       if (error) {
-        contenedor.innerHTML = '<p style="color: red;">Error al cargar viajes</p>';
+        contenedor.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
         return;
       }
 
