@@ -3,194 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InterGO</title>
-  
-  <!-- Estilos e iconos de Feather -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  <!-- SDK de Supabase -->
+  <title>InterGO - Viajes Interurbanos</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #22c55e;
+      --text: #f8fafc;
+      --text-sub: #94a3b8;
     }
-
     body {
-      background-color: #121212;
-      color: #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    header {
-      background-color: #1e1e1e;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
       padding: 16px;
+    }
+    .header {
       text-align: center;
-      border-bottom: 1px solid #2d2d2d;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
     }
-
-    header h1 {
-      font-size: 1.2rem;
-      color: #3b82f6;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .header h1 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 28px;
     }
-
-    main {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
     .card {
-      background-color: #1e1e1e;
-      border-radius: 12px;
-      padding: 16px;
-      border: 1px solid #2d2d2d;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
-
-    .status-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: var(--accent);
     }
-
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--text-sub);
     }
-
-    .status-badge.online {
-      background-color: rgba(34, 197, 94, 0.2);
-      color: #22c55e;
-    }
-
-    .status-badge.connecting {
-      background-color: rgba(234, 179, 8, 0.2);
-      color: #eab308;
-    }
-
-    .btn {
+    input {
       width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      background-color: #3b82f6;
-      color: white;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background-color 0.2s;
-    }
-
-    .btn:active {
-      background-color: #2563eb;
-    }
-
-    .logs {
-      font-family: monospace;
-      font-size: 0.85rem;
-      color: #a0a0a0;
-      background-color: #0d0d0d;
       padding: 12px;
+      margin-top: 4px;
       border-radius: 8px;
-      max-height: 200px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #fff;
+      box-sizing: border-box;
+      font-size: 16px;
     }
-
-    .log-item {
-      border-bottom: 1px solid #1a1a1a;
-      padding-bottom: 4px;
+    button {
+      width: 100%;
+      background-color: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .viaje-item {
+      border-bottom: 1px solid #334155;
+      padding: 12px 0;
+    }
+    .viaje-item:last-child {
+      border-bottom: none;
+    }
+    .ruta {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .precio {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .detalles {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>InterGO</h1>
-  </header>
+  <div class="header">
+    <h1>InterGO 🚗</h1>
+    <p style="color: var(--text-sub); font-size: 14px; margin-top: 4px;">Viajes Agendados Ciudad a Ciudad</p>
+  </div>
 
-  <main>
-    <div class="card">
-      <div class="status-box">
-        <span>Estado Base de Datos:</span>
-        <span id="db-status" class="status-badge connecting">Conectando...</span>
-      </div>
-      <button class="btn" onclick="testConnection()">
-        <i data-feather="refresh-cw"></i> Probar Conexión
-      </button>
-    </div>
+  <!-- Formulario Pasajero -->
+  <div class="card">
+    <h2>Agendar un Viaje</h2>
+    <form id="formViaje">
+      <label>Ciudad de Origen</label>
+      <input type="text" id="origen" placeholder="Ej. Monclova" required>
 
-    <div class="card">
-      <h3 style="margin-bottom: 12px; font-size: 1rem;">Consola de Diagnóstico</h3>
-      <div id="logs-container" class="logs">
-        <div class="log-item">Iniciando aplicación InterGO...</div>
-      </div>
-    </div>
-  </main>
+      <label>Ciudad de Destino</label>
+      <input type="text" id="destino" placeholder="Ej. Monterrey" required>
+
+      <label>Fecha del Viaje</label>
+      <input type="date" id="fecha" required>
+
+      <label>Hora de Salida</label>
+      <input type="time" id="hora" required>
+
+      <label>Oferta de Tarifa ($ MXN)</label>
+      <input type="number" id="precio" placeholder="Ej. 350" required>
+
+      <label>Tu Teléfono / WhatsApp</label>
+      <input type="tel" id="telefono" placeholder="Ej. 8661234567" required>
+
+      <button type="submit">Solicitar Viaje</button>
+    </form>
+  </div>
+
+  <!-- Lista de Viajes -->
+  <div class="card">
+    <h2>Viajes Agendados</h2>
+    <div id="listaViajes">Cargando viajes...</div>
+  </div>
 
   <script>
-    // Inicializar Iconos
-    feather.replace();
-
-    // Configuración de Supabase
     const SUPABASE_URL = "https://vkmyujrxavnufvxaqgfa.supabase.co";
-    const SUPABASE_KEY = "Sb_publisible_cIkkJnUuegPGcH8ZyoGP3A_n2nCqK5w";
-
+    const SUPABASE_KEY = "Sb_publisible_cIkkJnUuegPGcH8ZyoGP3A_n2nCqK5w"; 
+    
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function log(msg) {
-      const logs = document.getElementById('logs-container');
-      const item = document.createElement('div');
-      item.className = 'log-item';
-      const time = new Date().toLocaleTimeString();
-      item.textContent = `[${time}] ${msg}`;
-      logs.appendChild(item);
-      logs.scrollTop = logs.scrollHeight;
-    }
-
-    async function testConnection() {
-      const statusBadge = document.getElementById('db-status');
-      statusBadge.className = 'status-badge connecting';
-      statusBadge.textContent = 'Verificando...';
-      log('Probando conexión con Supabase...');
-
-      try {
-        // Intenta consultar la salud del servidor
-        const { data, error } = await db.from('_dummy_query_test').select('*').limit(1);
-        
-        // Supabase responderá incluso si la tabla no existe, lo que confirma conexión exitosa
-        statusBadge.className = 'status-badge online';
-        statusBadge.textContent = 'Conectado';
-        log('✅ Conexión con Supabase establecida correctamente.');
-      } catch (err) {
-        statusBadge.className = 'status-badge online';
-        statusBadge.textContent = 'Conectado';
-        log('✅ Cliente de Supabase listo para operar.');
+    async function cargarViajes() {
+      const { data, error } = await db.from('viajes').select('*').order('id', { ascending: false });
+      const contenedor = document.getElementById('listaViajes');
+      
+      if (error) {
+        contenedor.innerHTML = '<p style="color: red;">Error al cargar viajes</p>';
+        return;
       }
+
+      if (!data || data.length === 0) {
+        contenedor.innerHTML = '<p style="color: var(--text-sub);">No hay viajes agendados aún.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = '';
+      data.forEach(v => {
+        contenedor.innerHTML += `
+          <div class="viaje-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="ruta">${v.origen} ➔ ${v.destino}</span>
+              <span class="precio">$${v.precio_ofertado}</span>
+            </div>
+            <div class="detalles">
+              📅 ${v.fecha} | ⏰ ${v.hora ? v.hora.substring(0,5) : ''} hs
+            </div>
+            <div style="margin-top: 8px;">
+              <a href="https://wa.me/52${v.telefono}?text=Hola,%20vi%20tu%20viaje%20de%20${v.origen}%20a%20${v.destino}%20en%20InterGO" target="_blank" style="color: #22c55e; text-decoration: none; font-size: 13px; font-weight: bold;">💬 Contactar por WhatsApp</a>
+            </div>
+          </div>
+        `;
+      });
     }
 
-    // Ejecutar prueba inicial
-    testConnection();
+    document.getElementById('formViaje').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const nuevoViaje = {
+        origen: document.getElementById('origen').value,
+        destino: document.getElementById('destino').value,
+        fecha: document.getElementById('fecha').value,
+        hora: document.getElementById('hora').value,
+        precio_ofertado: parseFloat(document.getElementById('precio').value),
+        telefono: document.getElementById('telefono').value,
+        estado: 'pendiente'
+      };
+
+      const { error } = await db.from('viajes').insert([nuevoViaje]);
+
+      if (error) {
+        alert('Error al publicar el viaje: ' + error.message);
+      } else {
+        alert('¡Viaje agendado con éxito!');
+        document.getElementById('formViaje').reset();
+        cargarViajes();
+      }
+    });
+
+    cargarViajes();
   </script>
 </body>
 </html>
